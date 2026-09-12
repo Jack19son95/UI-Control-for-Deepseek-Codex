@@ -112,6 +112,8 @@ harness and gives the model observations only:
   capture answered any other way (a `som` whose marks table already replied) use `cleanup -Path <png>`. Nothing
   is deleted by age, and nothing is kept unless the user - or the run itself - says so with `-Keep`: hold only
   what is unread and re-shoot instead of hoarding stale frames.
+- **Nothing stale in the working memory.** A kept capture is a screen that no longer exists, still competing for
+  attention; reading out of band keeps the session's picture in step with the window actually being driven.
 - **Text channels first.** `tree`, `marks -Json`, `uia text` / `uia value`, `msaa` and `list` often answer the
   question outright - no picture, no read, no round trip. A failed read falls back to such a channel or a fresh
   capture, a call the agent makes itself rather than stopping to ask the user.
