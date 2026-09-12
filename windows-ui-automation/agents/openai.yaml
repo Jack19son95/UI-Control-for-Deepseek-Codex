@@ -1,0 +1,4 @@
+interface:
+  display_name: Windows UI Automation
+  short_description: Drive and screenshot native Windows apps from PowerShell for GUI debugging and verification
+  default_prompt: Use $windows-ui-automation to drive this Windows app, verify its UI behaviour and confirm with screenshots.
