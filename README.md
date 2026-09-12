@@ -2,9 +2,14 @@
 
 **English** | [中文说明](#中文说明)
 
-Give Codex **real, end-to-end control of Windows apps** - even when the model has no native vision and no
-Computer Use plugin. Pure PowerShell + P/Invoke, zero dependencies, works on the inbox Windows PowerShell 5.1
-and on PowerShell 7. Built for **DeepSeek** models in Codex, usable by every model Codex can run.
+Give Codex **real, end-to-end control of Windows apps** - with or without the Computer Use plugin. Pure
+PowerShell + P/Invoke, zero dependencies, works on the inbox Windows PowerShell 5.1 and on PowerShell 7. Built
+and field-tested on **DeepSeek-V4.1** in Codex (native vision included); usable by every model Codex can run.
+
+What it buys you is a **clean main session**: every capture is read out of band by a throw-away run - native
+vision still does the seeing - and the picture is deleted the moment the read ends. No image bytes, no stale
+screens, nothing left in memory to slow the next turn down or pull attention towards a window that has already
+moved on.
 
 ```
 selftest -> windows -> som/look -> steps -Do "activate|click:1001|type:hello|key:ENTER"
@@ -12,10 +17,12 @@ selftest -> windows -> som/look -> steps -Do "activate|click:1001|type:hello|key
 
 ## Why it exists
 
-The built-in Computer Use plugin (`@oai/sky`) is excellent - but it needs a vision-capable model plus the app
-runtime that ships it. A DeepSeek session in Codex gets none of it: no accessibility bridge, no screenshots, no
-mouse. This skill closes that gap with a self-contained engine a model can drive through one CLI, and it fixes
-the failure mode that kills long GUI runs: **image accumulation in the request body**.
+The built-in Computer Use plugin (`@oai/sky`) is excellent - but it only exists where the app runtime ships it,
+and every screenshot it takes stays in the conversation. A DeepSeek session in Codex gets no accessibility
+bridge, no screenshots and no mouse; and any session that reads images pays for each capture again on every
+later request, until the gateway refuses the body outright. This skill closes both gaps with a self-contained
+engine a model drives through one CLI, and it fixes the failure mode that kills long GUI runs: **image
+accumulation in the request body - and in the working memory**.
 
 ## Feature highlights
 
@@ -24,7 +31,8 @@ the failure mode that kills long GUI runs: **image accumulation in the request b
 | **Real mouse & keyboard** | SendInput clicks, drags, wheel, chords, clipboard-typed text (IME-safe), Unicode mode |
 | **API-level control** | `WM_COMMAND`, `BM_CLICK`, `WM_SETTEXT`, MSAA default actions, UI Automation invoke/select/set-value - no cursor, no focus change |
 | **Element finding** | MSAA + UIA element trees, Set-of-Marks numbered screenshots (`som`), a marks table you can click by index, pixel-level analysis for apps with no accessibility tree |
-| **Screenshots that never enter the request** | `shot` / `som` capture full resolution; `look` reads them in a throw-away Codex run, returns **text only**, and deletes the picture the moment the read is over |
+| **Screenshots that never enter the conversation** | `shot` / `som` capture full resolution; `look` gets them read by a throw-away Codex run (native vision included), returns **text only**, and deletes the file the moment the read is over |
+| **Context and memory stay flat** | No accumulated image bytes, no stale screens competing for attention, no request-body growth - a long run keeps the speed of a fresh one |
 | **Occlusion rescue** | `reveal`: raise -> minimise blockers -> move blockers -> taskbar switch -> close session-created blockers -> Start Menu / desktop search |
 | **Real desktop launching** | Double-click desktop icons like a human (DPI-aware enumeration + proven landing point), Start menu / UWP fallback |
 | **Batch steps** | `steps -Do "activate|click:1001|type:...|key:ENTER|shot:out.png"` - one process, one round trip |
@@ -35,11 +43,12 @@ the failure mode that kills long GUI runs: **image accumulation in the request b
 
 | | **This skill** (`windows-ui-automation`) | **Computer Use plugin** (`@oai/sky`) |
 | --- | --- | --- |
-| Model support | Any model Codex runs, **including DeepSeek** (no native vision required) | Requires a vision-capable model and the app runtime that ships the plugin |
+| Model support | Any model Codex runs; built and tuned on **DeepSeek-V4.1** - native vision is used, it just never enters the conversation | Requires a vision-capable model and the app runtime that ships the plugin |
 | Install | Copy one folder into `%USERPROFILE%\.codex\skills\` - no config, no build, no packages | Bundled with the app; availability depends on your client/region |
 | Dependencies | None (PowerShell 5.1 or 7 + P/Invoke, all inbox) | Ships with the app runtime |
-| Screenshots | Full resolution, read **out of band** by a throw-away run; only text returns, the image is deleted immediately | The harness hands images to the model; the provider must accept image input |
-| Context cost of a screenshot | ~a few hundred text tokens, **zero image bytes**, no request-body growth | Image bytes stay in the conversation and are re-sent every turn |
+| Screenshots | Full resolution, read **out of band** by a throw-away run of the same model (native vision does the reading); only text returns and the picture is deleted the moment the read ends | The harness hands images to the model and they stay in the conversation |
+| Memory / context cost of a screenshot | A few hundred text tokens, **zero image bytes**, and the file is off the disk right after the read - nothing left to grow the request body | Image bytes stay in context, are re-sent every turn and are paid for again as input |
+| Attention hygiene | The session holds only what still matters - no stale screen state competing with the window actually being driven | Every past screenshot stays in context and keeps shaping later steps |
 | Long-run behaviour | Request body stays flat; `budget` shows live context size and pending shots | Depends on provider limits; large runs can hit body-size limits |
 | Element finding | MSAA/UIA trees + numbered marks + pixel analysis (works with no accessibility tree at all) | Accessibility indices from the app |
 | Input paths | Real input **and** message-level **and** UIA actions, chosen per case | Real input driven by the app |
@@ -49,9 +58,10 @@ the failure mode that kills long GUI runs: **image accumulation in the request b
 | Platform | Windows only | Cross-platform where the app supports it |
 | Best at | DeepSeek sessions, scripted/batch automation, pixel-exact verification, long autonomous runs, safety-gated input, apps with no accessibility tree | First-class in-app experience when a vision model is available |
 
-Honest summary: when you have a vision model and the plugin, **use the plugin** - it is simpler and its image
-understanding is first class. Use this skill when you are on DeepSeek, when you need scripted/batch control, when
-the plugin is unavailable or times out, or when screenshots must never bloat the request.
+Honest summary: when the plugin is available, its in-app flow is simpler - use it. Use this skill when you are on
+DeepSeek (vision or not), when you need scripted/batch control, when the plugin is unavailable or times out, or
+when the main conversation has to stay free of screenshots. The trade it makes is deliberate: **the model still
+sees everything, the session remembers none of it.**
 
 ## Install (no extra steps)
 
@@ -161,21 +171,26 @@ windows-ui-automation/
 windows-ui-automation, Codex skill, DeepSeek, Codex, computer-use alternative, UI automation, GUI automation,
 RPA, desktop automation, PowerShell, P/Invoke, Win32, MSAA, UI Automation, UIA, accessibility, SendInput, real
 mouse, real keyboard, screenshot, Set-of-Marks, OCR-free, AI agent, LLM agent, autonomous agent, occlusion
-rescue, safety gate, image-free context, payload too large, 413, context engineering.
+rescue, safety gate, image-free context, context hygiene, attention hygiene, memory efficiency, payload too
+large, 413, context engineering.
 
 ---
 
 ## 中文说明
 
-**给 Codex 装上真正的 Windows UI 操作能力** —— 即使模型没有原生视觉、没有 Computer Use 插件也能用。纯
-PowerShell + P/Invoke 实现，零依赖零安装，Windows 自带的 PowerShell 5.1 和 PowerShell 7 都能跑；为 Codex 里的
-**DeepSeek** 模型量身调校，也能被任何 Codex 模型使用。
+**给 Codex 装上真正的 Windows UI 操作能力** —— 有没有 Computer Use 插件都能用。纯 PowerShell + P/Invoke 实现，
+零依赖零安装，Windows 自带的 PowerShell 5.1 和 PowerShell 7 都能跑；以 Codex 里的 **DeepSeek-V4.1** 为主力调试，
+原生视觉照常使用，也能被任何 Codex 模型使用。
+
+它换来的是**一个干净的主会话**：每次截图都交给一次性进程离线读取（看图仍然用模型自己的原生视觉），读完立刻删除
+图片；既不占图片字节、不留过期画面，也不给后续步骤留下干扰注意力的旧状态。
 
 ### 为什么需要它
 
-原生 Computer Use 插件（`@oai/sky`）很优秀，但它需要具备视觉能力的模型和随应用分发的运行时。Codex 里的
-DeepSeek 会话拿不到这些：没有元素树、没有截图、没有鼠标。本技能用一个自包含引擎补上这块短板，并顺手解决了长时
-UI 任务的致命伤：**请求体被截图撑爆**。
+原生 Computer Use 插件（`@oai/sky`）很优秀，但它只在随应用分发它的地方存在，而且它拍的每张截图都会留在对话里。
+Codex 里的 DeepSeek 会话拿不到元素树、截图和鼠标；而任何会读图的会话，每张截图都会在之后每一次请求里被重复
+发送，直到网关直接拒收请求体。本技能用一个自包含引擎同时补上这两块短板，并顺手解决了长时 UI 任务的致命伤：
+**请求体和工作记忆被截图撑爆**。
 
 ### 能力亮点
 
@@ -184,8 +199,9 @@ UI 任务的致命伤：**请求体被截图撑爆**。
   不动鼠标、不抢焦点。
 - **元素定位**：MSAA + UIA 元素树、Set-of-Marks 编号截图、可按序号点击的元素表，以及为"没有无障碍树"的应用
   准备的像素级分析。
-- **截图永不进上下文**：`shot`/`som` 全分辨率抓取；`look` 交给一次性 Codex 进程读取，**只回文本**，读完立刻
-  删除图片（成功失败都删）。
+- **截图永不进上下文**：`shot`/`som` 全分辨率抓取；`look` 交给一次性 Codex 进程读取（原生视觉照常发挥），
+  **只回文本**，读完立刻删除图片（成功失败都删）。
+- **省内存、省上下文**：不累积图片字节、不留过期画面干扰注意力、请求体不增长——长任务也能保持接近新会话的速度。
 - **遮挡自救**：置前 → 最小化遮挡 → 挪开遮挡 → 任务栏切换 → 关闭本会话新建的遮挡 → 开始菜单/桌面搜索。
 - **像人一样启动**：真实双击桌面图标（DPI 感知枚举 + 落点校验），失败才回退开始菜单/UWP 搜索。
 - **批量步骤**：`steps -Do "activate|click:1001|type:...|key:ENTER|shot:out.png"`，一个进程一次往返。
@@ -197,11 +213,12 @@ UI 任务的致命伤：**请求体被截图撑爆**。
 
 | | **本技能**（windows-ui-automation） | **Computer Use 插件**（@oai/sky） |
 | --- | --- | --- |
-| 模型支持 | 任何 Codex 模型，**含 DeepSeek**（无需原生视觉） | 需要具备视觉能力的模型与随应用分发的运行时 |
+| 模型支持 | 任何 Codex 模型；以 **DeepSeek-V4.1** 为主力调试——原生视觉照常使用，只是图片不进入对话 | 需要具备视觉能力的模型与随应用分发的运行时 |
 | 安装 | 把一个文件夹复制进 `%USERPROFILE%\.codex\skills\`，无需配置/编译/装包 | 随应用附带，能否使用取决于客户端与地区 |
 | 依赖 | 无（PowerShell 5.1/7 + P/Invoke，全部系统自带） | 依赖应用运行时 |
-| 截图处理 | 全分辨率抓取，由一次性进程**离线读取**，只回文本、读完即删 | 由宿主把图片交给模型，服务端必须支持图片输入 |
-| 截图的上下文代价 | 仅几百个文本 token，**零图片字节**，请求体不增长 | 图片字节留在对话中，每次请求重发 |
+| 截图处理 | 全分辨率抓取，由同一模型的一次性进程**离线读取**，只回文本、读完即删 | 由宿主把图片交给模型，图片留在对话中 |
+| 截图的内存/上下文代价 | 仅几百个文本 token，**零图片字节**，磁盘文件读完即删，请求体不增长 | 图片字节留在上下文，每次请求重发并重复计入输入 |
+| 注意力卫生 | 会话只保留仍然有效的信息，过期画面不会和当前窗口争夺注意力 | 历史截图长期留在上下文，持续影响后续判断 |
 | 长时运行 | 请求体保持平稳，`budget` 可随时查看上下文与待处理截图 | 受服务商体积上限影响，长任务可能触及上限 |
 | 元素定位 | MSAA/UIA 元素树 + 编号标记 + 像素分析（完全没有无障碍树也能干） | 应用提供的无障碍下标 |
 | 输入方式 | 真实输入 / 消息级 / UIA 动作，按场景择优 | 由应用驱动的真实输入 |
@@ -211,8 +228,9 @@ UI 任务的致命伤：**请求体被截图撑爆**。
 | 平台 | 仅 Windows | 应用支持的各平台 |
 | 最擅长 | DeepSeek 会话、脚本化/批处理、像素级验证、长时自主运行、需要安全闸的输入、没有无障碍树的应用 | 有视觉模型时的第一优先体验 |
 
-诚实结论：有视觉模型和插件时**优先用插件**，它更简单、图像理解是一等公民；当你用 DeepSeek、需要脚本化/批
-处理、插件不可用或超时、或者截图绝不能撑大请求体时，用本技能。
+诚实结论：插件可用时它的应用内流程更简单，**优先用它**；当你用 DeepSeek（有无原生视觉都一样）、需要脚本化/
+批处理、插件不可用或超时、或者主会话必须保持无截图时，用本技能。它的取舍很明确：**模型照样看得见，会话什么都
+不记。**
 
 ### 安装（复制即生效）
 
@@ -253,7 +271,7 @@ pwsh -File $ui budget                                        # 查看上下文�
 
 在 Codex 里不需要你手敲这些命令——技能会告诉模型什么时候用、怎么用。
 
-### 它解决的核心问题：截图撑爆请求体
+### 它解决的核心问题：截图撑爆请求体、污染上下文
 
 模型读过的每张图片都会留在对话里，并在之后的每次请求中**逐字节重发**。长时 UI 任务会让请求体持续膨胀，直到网关
 拒收（`413 Payload Too Large: Failed to buffer the request body: length limit exceeded`），此后每次请求都会
@@ -263,6 +281,9 @@ pwsh -File $ui budget                                        # 查看上下文�
 **文本**，图片在读取结束的瞬间删除；`cleanup -Path` 清理"答案已由其他渠道得到"的截图；不按时间删，只保留尚未读
 取的画面，需要时重新截取即可。文本通道优先（`tree`、`marks -Json`、`uia text`、`msaa`、`list`），很多问题根本
 不需要图片。
+
+省下来的不只是字节：会话里没有过期画面，模型每一步都只面对"当前真实窗口 + 仍然有效的信息"，注意力不被旧状态
+牵着走，长任务的速度和判断力都更接近刚开始的时候。
 
 ### 安全模型
 
@@ -306,7 +327,7 @@ windows-ui-automation/
 
 Windows UI 自动化、Codex 技能、DeepSeek、Codex、Computer Use 替代方案、GUI 自动化、RPA、桌面自动化、PowerShell、
 P/Invoke、Win32、MSAA、UI Automation、无障碍、SendInput、真实键鼠、截图、Set-of-Marks、免 OCR、AI Agent、
-智能体、长时自主运行、遮挡自救、安全闸、请求体超限、413、上下文工程。
+智能体、长时自主运行、遮挡自救、安全闸、上下文卫生、注意力卫生、省内存、请求体超限、413、上下文工程。
 
 ## License
 
