@@ -69,7 +69,7 @@ sees everything, the session remembers none of it.**
 
 ```powershell
 # option A - git
-git clone --depth 1 https://github.com/carolwjade/CarlopensourceBase "$env:TEMP\carlbase"
+git clone --depth 1 https://github.com/carolwjade/UI-Control-for-Deepseek-Codex "$env:TEMP\carlbase"
 Copy-Item "$env:TEMP\carlbase\windows-ui-automation" "$env:USERPROFILE\.codex\skills\" -Recurse -Force
 
 # option B - manual: download the repo ZIP, extract it, and copy the windows-ui-automation folder
@@ -238,7 +238,7 @@ Codex 里的 DeepSeek 会话拿不到元素树、截图和鼠标；而任何会�
 
 ```powershell
 # 方式 A - git
-git clone --depth 1 https://github.com/carolwjade/CarlopensourceBase "$env:TEMP\carlbase"
+git clone --depth 1 https://github.com/carolwjade/UI-Control-for-Deepseek-Codex "$env:TEMP\carlbase"
 Copy-Item "$env:TEMP\carlbase\windows-ui-automation" "$env:USERPROFILE\.codex\skills\" -Recurse -Force
 
 # 方式 B - 手动：下载仓库 ZIP、解压，把 windows-ui-automation 文件夹复制进 %USERPROFILE%\.codex\skills\
